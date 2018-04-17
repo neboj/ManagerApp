@@ -1,0 +1,26 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    {{ parent() }}
+<section class="main-controls bg">
+    <div class="container league-window-container">
+        <div class="row ">
+
+            {% if app.session.get('matchCount')>0 %}
+            <div class="col push-s1 s4 league-window-options">
+                <a href="{{ path('changeFormation',{'status':'resume'}) }}"><img  id="resume-league" src="{{ asset('pictures/r1.jpg') }}"></a>
+            </div>
+            {% endif %}
+
+            <div class="col push-s3 s4 league-window-options" id="new-league">
+                <a  href="{{ path('changeFormation',{'status':'new'}) }}"><img  id="new-league" src="{{ asset('pictures/t1.jpg') }}"></a>
+            </div>
+
+            <div class="hiddendiv" data-status="{{ status }}">asd</div>
+
+        </div>
+    </div>
+</section>
+
+
+{% endblock %} {#endblock body#}

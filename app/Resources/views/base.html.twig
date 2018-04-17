@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <title>{% block title %}Welcome!{% endblock %}</title>
+        {% block stylesheets %}
+            <link rel="stylesheet" href="{{ asset('css/style.css') }}"/>
+            <link rel="stylesheet" href="{{ asset('css/materialize.css') }}"/>
+        {% endblock %}
+        <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
+    </head>
+    <body>
+        <nav class="nav">
+            
+            <div class="nav-wrapper">
+                <a href="{{ path('homepage') }}" class="brand-logo"><img id="logo" src="{{ asset('pictures/logo.png') }}" height="50"></a>
+                <ul id="nav-mobile" class="right hide-on-med-and-down">
+                    <li><a href="{{ path('homepage') }}">Home</a></li>
+                    <li><a href="{{ path('chooseTeam') }}">Choose Team</a></li>
+                </ul>
+            </div>
+        </nav>
+        <div class="site-content">
+            
+            
+            {% block body %}
+                
+                
+            {% endblock %}
+        </div>
+        <footer>
+            <p>Copyright 2018</p>
+        </footer>
+        {% block javascripts %}
+            <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+            <script src="{{ asset('js/materialize.js') }}"></script>
+            <script src="{{ asset('js/prfunctions.js') }}"></script>
+        {% endblock %}
+    </body>
+</html>

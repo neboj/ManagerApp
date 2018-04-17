@@ -1,0 +1,223 @@
+/*
+* Colors Primary ->
+  Colors Call to Action ->  FD8C09
+*/
+
+body {
+   display: flex;
+  min-height: 100vh;
+  flex-direction: column;
+}
+
+.site-content {
+  flex: 1;
+}
+
+/*
+ NAV
+
+*/
+
+footer {
+  height:60px;
+   background:#354953;
+   text-align:center;
+   color:white;
+}
+.nav ul a:hover {
+    background:#FD8C09;
+}
+
+#logo{
+    height: 80px;
+    margin-top:-10px;
+}
+.nav {
+    background:#354953;
+}
+.nav-wrapper {
+    width: 90%;
+    margin: 0 auto;
+}
+
+
+/*.skip-ahead{
+    text-align: center;
+    background: indianred;
+    height: 53vh;
+}*/
+/*.create{
+    height:30vh;
+    background: indianred;
+}
+.create:hover{
+    background: white;
+}
+.skip-ahead:hover{
+    background: white;
+}*/
+
+
+select{
+    display:block !important;
+}
+
+.transfer-players:hover{
+    background: white;
+}
+#table1,#table2,#transfer-table-names,#transfer-buttons{
+    display:none;
+}
+#create-team,#add-player,#transf{
+    width:100%;
+}
+
+#play-match{
+    max-width: 100%;
+}
+.league-window-options{
+    text-align: center;
+    margin-top:10vh;
+}
+.league-window-options:hover{
+    transform:scale(1.1);
+    transition:0.5s;
+    filter:grayscale(1);
+}
+.league-window-options img{
+    margin-top:1%;
+}
+/*.league-window-container{
+    text-align: center;
+    background: indianred;
+    height: 53vh;
+}*/
+#resume-league,#new-league{
+    max-width: 100%;
+    max-height: 100%;
+}
+/*.choose-team{
+    background-image: url("../pictures/s1.jpg");
+    background-size:cover;
+    background-repeat: no-repeat;
+}*/
+/*.selected-team{
+    font-size: 35px;
+    color:white;
+}
+.selected-team:hover{
+    font-weight: bold;
+}*/
+#soccer-field{
+    max-width:60%;
+    text-align: center;
+    margin-top:2vh;
+}
+.formation-container{
+    text-align: center;
+    /*background: indianred;*/
+}
+#simulate{
+    font-size:35px;
+    color:white;
+    cursor:pointer;
+}
+
+
+
+
+
+/*
+    # Help class
+*/
+
+.bg {
+     background:url('../pictures/pozadina.jpg');
+    background-size:cover;
+    background-position: center center;
+}
+/*
+    # Main controls
+*/
+.main-controls {
+    /*background:url('../pictures/pozadina.jpg');
+    background-size:cover;
+    background-position: center center;*/
+    height:100vh;
+    position:relative;
+}
+
+.controls {
+    position:absolute;
+    top:50%;
+    left:50%;
+    transform:translate(-50%, -50%);
+}
+
+.controls a img:hover {
+    transform:scale(1.1);
+    transition:0.5s;
+    filter:grayscale(1);
+}
+
+
+/*
+    # Choose Team
+*/
+.choose-team-section {
+    height:100vh;
+    position:relative;
+}
+
+.choose-team-heading {
+   /*background:#354953;*/
+   color:#fff;
+   font-weight:500;
+}
+.simulate-section{
+    height: 100%;
+    position: relative;
+}
+/*
+    #Buttons
+*/
+#js-show-starting-players{
+    color:white;
+}
+.btn-play {
+    background-color: #FD8C09;
+padding: 7px 40px;
+text-transform: uppercase;
+cursor: pointer;
+color: white;
+border-radius: 2px;
+display: block;
+margin-top: 10px;
+text-align:center;
+}
+.btn-play:hover {
+    background-color:#FD8C09B3;
+    transition:0.5s background;
+}
+#form_save {
+    background-color: #FD8C09;
+    padding: 7px 40px;
+    text-transform: uppercase;
+    cursor: pointer;
+    color: white;
+    border-radius: 2px;
+    display: inline-block;
+    margin-top: 10px;
+    text-align:center;
+    border-style:none;
+}
+#js-match-count{
+    display:none;
+}
+/*
+*   # Transfer players
+*/
+.transfer-players-section {
+    height:100%;
+    color:white;
+}

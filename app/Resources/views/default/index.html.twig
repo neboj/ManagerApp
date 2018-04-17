@@ -1,0 +1,21 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+{{ parent() }}
+	
+	<section class="main-controls bg">
+    <div class="container">
+        <div class="row">
+            <div class="controls">
+	            <a href="{{ path('createTeam') }}"><div class="col s4 create"><img  id="create-team" src="{{ asset('pictures/createtam.jpg') }}"></div></a>
+	            <a href="{{ path('addPlayer') }}"><div class="col s4 create"><img id="add-player" src="{{ asset('pictures/add.jpg') }}"></div></a>
+	            <a href="{{ path('transferPlayers') }}"><div class="col s4 create"><img id="transf" src="{{ asset('pictures/tr.PNG') }}"></div></a>
+	            <a href="{{ path('playMatch') }}"><div class="col s12 skip-ahead"><img id="play-match" src="{{ asset('pictures/pla.PNG') }}"></div></a>
+            </div>
+    </div>
+    </div>
+    </section>
+
+{% endblock %} {#endblock body#}
+
+

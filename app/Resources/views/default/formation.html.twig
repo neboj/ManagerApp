@@ -1,0 +1,156 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    {{ parent() }}
+<section class="simulate-section bg">
+   <!--  Match count: -->
+    <span id="js-match-count">
+         <!-- {{  app.session.get('matchCount') }} -->
+    </span>
+    <span id='formationStatus'></span>
+
+{#{{ dump(app.session) }}#}
+ 
+    <div class="container formation-container">
+        {% set status='new' %}
+        {% if app.session.get('matchCount') and app.session.get('matchCount')>0 %}
+        {% set status='resume' %}
+        {% endif %}
+
+        <div class="row ">
+            <div class="col s6 " id="new-league">
+                {#calculate team ranks#}
+                {% set playerRank=0 %}
+                {% for t in teams %}
+                    {% if t.id==app.session.get('teamId') %}
+                        {% set playerRank=playerRank+t.rank %}
+                    {% endif %}
+                {% endfor %}
+                <img  id="soccer-field" src="{{ asset('pictures/f1.jpg') }}">
+                <select id="js-player-team" class="browser-default" disabled>
+                    <option value="{{ app.session.get('teamId') }}" disabled selected>{{ app.session.get('teamName') }} ({{ playerRank }})</option>
+                </select><br>
+                <select id="js-select-formation">
+                    <option value="" disabled selected>Formation</option>
+                    <option value="f343" id="">{{ constant('AppBundle\\Entity\\Team::f343') }}</option>
+                    <option value="f442" id="">{{ constant('AppBundle\\Entity\\Team::f442') }}</option>
+                    <option value="f541" id="">{{ constant('AppBundle\\Entity\\Team::f541') }}</option>
+                </select>
+            </div>
+
+
+            <div class="col s6 " id="new-league">
+                <img  id="soccer-field" src="{{ asset('pictures/f1.jpg') }}">
+                <select id="js-bot-team">
+                    <option value="" disabled selected>Opposing team</option>
+
+                    {% for team in teams %}
+                        {% if team.id != app.session.get('teamId') %}
+                            
+                        <option value="{{ team.name }}_-_-{{ team.id }}_-_-{{ team.rank }}" id="{{ team.id }}" {% if app.session.get('matchCount')>0 %} {% if (team.rank == 0) or (team.id == app.session.get('match1BotId')) or (team.id == app.session.get('match2BotId')) or (team.id == app.session.get('match3BotId')) %} disabled{% endif %} {% endif %} >{{ team.name }} ({{ team.rank }})</option>
+                            
+                        {% endif %}
+                        }
+                    {%  endfor %}
+                </select>
+            </div>
+        </div>
+        
+
+        <div class="row">
+            <div class="col s4"  id="js-show-starting-players">
+
+            </div>
+            <div class="input-field col s4">
+                <span id="simulate" class="btn-play" onclick="simulateMatch()">PLAY</span>
+                <p >Injured player: <span id="js-injured-player-current"></span></p>
+                <h5>score:</h5>
+                <h4 id="scoreboard">0:0</h4>
+            </div>
+            <div class="input-field col s4">
+
+            </div>
+        </div>
+
+        <div class="row">
+
+        </div>
+
+        <hr>
+
+
+        <div class="row">
+            <div class="col s12" id='js-history'>
+                match history
+                {% if app.session.get('matchCount')==1 %}
+                    <p>Game against {{app.session.get('match1BotName')}}  resulted in score: {{app.session.get('match1PlayerGoals')}}-{{app.session.get('match1BotGoals')}} (injured: {{app.session.get('firstInjuredName')}})</p>
+                {% endif %}
+                {% if app.session.get('matchCount')==2 %}
+                    <p>Game against {{app.session.get('match1BotName')}}  resulted in score: {{app.session.get('match1PlayerGoals')}}-{{app.session.get('match1BotGoals')}} (injured: {{app.session.get('firstInjuredName')}})</p>
+                    <p>Game against {{app.session.get('match2BotName')}}  resulted in score: {{app.session.get('match2PlayerGoals')}}-{{app.session.get('match2BotGoals')}} (injured: {{app.session.get('secondInjuredName')}})</p>
+                {% endif %}
+                {% if app.session.get('matchCount')==3 %}
+                    <p>Game against {{app.session.get('match1BotName')}}  resulted in score: {{app.session.get('match1PlayerGoals')}}-{{app.session.get('match1BotGoals')}} (injured: {{app.session.get('firstInjuredName')}})</p>
+                    <p>Game against {{app.session.get('match2BotName')}}  resulted in score: {{app.session.get('match2PlayerGoals')}}-{{app.session.get('match2BotGoals')}} (injured: {{app.session.get('secondInjuredName')}})</p>
+                    <p>Game against {{app.session.get('match3BotName')}}  resulted in score: {{app.session.get('match3PlayerGoals')}}-{{app.session.get('match3BotGoals')}} (injured: {{app.session.get('thirdInjuredName')}})</p>
+                {% endif %}
+
+            </div>
+        </div>
+    </div>
+</section>
+    <script>
+        function simulateMatch(){
+            var teamPlayerId='{{ app.session.get('teamId') }}',
+                teamPlayerName='{{app.session.get('teamName')}}',                
+                teamBotArray=$('#js-bot-team').val(),
+                tokens=teamBotArray.split("_-_-"),
+                teamBotName=tokens[0],
+                teamBotId=tokens[1],
+                path='{{ path('changeFormation',{'status':status}) }}',
+                formation=$('#js-select-formation').val();
+            var scoreToHistory=document.getElementById('scoreboard').innerHTML,
+                injuredToHistory=document.getElementById('js-injured-player-current').innerHTML;
+
+            var formationStatus=document.getElementById('formationStatus');
+            if(formationStatus.innerHTML==123){
+                alert('Not enough players');
+                return;
+            }
+            var cnt=document.getElementById('js-match-count').innerHTML;
+            if(cnt==3){
+                alert('League over.');
+                return;
+            }
+
+
+            $.ajax({
+               type:'POST',
+               url:path,
+               data:{
+                   teamPlayerId:teamPlayerId,
+                   teamBotId:teamBotId,
+                   teamBotName:teamBotName,
+                   formation:formation,
+                   simulate:true
+               },
+                success:function(data,status){
+                    /*alert(data);*/
+                    var tokens = data.split('_-_-'),
+                        scoreboard=tokens[0],
+                        matchCounter=tokens[1],
+                        currentInjuredName=tokens[2];
+                    document.getElementById('scoreboard').innerHTML=scoreboard;
+                    document.getElementById('js-match-count').innerHTML=matchCounter;
+                    document.getElementById('js-injured-player-current').innerHTML=currentInjuredName;
+                    $('#js-history').append('<p>Game against '+teamBotName+' resulted in score: '+scoreboard+' (injured: '+ currentInjuredName+')</p>');
+                    $('#js-bot-team').find('option[value="'+$('#js-bot-team').val()+'"]').prop('disabled', true);
+                },
+                error:function(){
+                    alert('error,try later');
+                }
+            });
+        }
+    </script>
+
+{% endblock %} {#endblock body#}

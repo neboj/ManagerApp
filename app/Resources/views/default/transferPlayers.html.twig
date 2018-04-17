@@ -1,0 +1,229 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    {{ parent() }}
+    <section class="transfer-players-section bg">
+        
+        <div class="container">
+
+          <div class="row">
+              <div class="input-field col s12">
+
+                  <select id="js-select-team">
+                      <option value="" disabled selected>Choose your team</option>
+                      {% for team in teams %}
+                      <option value="{{ team.name }}_-_-{{ team.id }}" id="{{ team.id }}">{{ team.name }}</option>
+                      {%  endfor %}
+
+                  </select>
+                  <span class="js-selected-team"></span>
+
+              </div>
+
+          </div>
+            <div class="row " id="transfer-table-names">
+                <div class="col s5">All players</div>
+                <div class="col push-s2 s5">Current team</div>
+            </div>
+
+            <div class="row">
+                <div class="col s5 tab">
+                    <table id="table1" class="responsive-table highlight">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Position</th>
+                                <th>Quality</th>
+                                <th>Speed</th>
+                                <th>Select</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                        {% for player in availablePlayers %}
+                            <tr id="{{ player.id }}">
+                                <td>{{ player.name }}</td>
+                                <td>{{ player.position }}</td>
+                                <td>{{ player.quality }}</td>
+                                <td>{{ player.speed }}</td>
+                                <td><label><input type="checkbox" class="filled-in" name="check-tab1"/><span></span></label></td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="tab tab-btn col s2" id="transfer-buttons">
+                    <button onclick="tab1_To_tab2();">>>>>></button>
+                    <button onclick="tab2_To_tab1();"><<<<<</button>
+                </div>
+
+                <div class="col s5 tab">
+                    <table id="table2" class="responsive-table highlight">
+                        <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Position</th>
+                            <th>Quality</th>
+                            <th>Speed</th>
+                            <th>Select</th>
+                        </tr>
+                        </thead>
+
+                    </table>
+                </div>
+            </div>
+
+        </div>
+    </section>
+    <script>
+        function tab1_To_tab2()
+        {
+            var table1 = document.getElementById("table1"),
+                table2 = document.getElementById("table2"),
+                checkboxes = document.getElementsByName("check-tab1"),
+                rows2=table2.getElementsByTagName("tr").length,
+                checkboxesCounter=0,
+                result=0,
+                maxPlayersPerTeam=22;
+
+            for(var i = 0; i < checkboxes.length; i++){
+                if(checkboxes[i].checked) {
+                    checkboxesCounter++;
+                }
+            }
+            result=checkboxesCounter+rows2;
+            if(result>maxPlayersPerTeam+1){ /*max 3 players (4  <tr>  tags - title tag <tr>) */
+                alert("Sorry, max "+(maxPlayersPerTeam)+" players per team!");
+                return;
+            }
+            console.log("Val1 = " + checkboxes.length);
+            for(var i = 0; i < checkboxes.length; i++){
+                if(checkboxes[i].checked)
+                {
+                    // create new row and cells
+                    var newRow = table2.insertRow(table2.length),
+                        cell1 = newRow.insertCell(0),
+                        cell2 = newRow.insertCell(1),
+                        cell3 = newRow.insertCell(2),
+                        cell4 = newRow.insertCell(3);
+                        cell5 = newRow.insertCell(4);
+                    // add values to the cells
+                    var name = table1.rows[i+1].cells[0].innerHTML,
+                        position =table1.rows[i+1].cells[1].innerHTML,
+                        quality = table1.rows[i+1].cells[2].innerHTML,
+                        speed =table1.rows[i+1].cells[3].innerHTML,
+                        id=table1.rows[i+1].getAttribute('id');
+                    var team=$("#js-select-team").val();
+                    var tokens = team.split("_-_-");
+                    var teamName = tokens[0],
+                        teamId = tokens[1];
+
+
+                    newRow.setAttribute("id",id);
+                    cell1.innerHTML = table1.rows[i+1].cells[0].innerHTML;
+                    cell2.innerHTML = table1.rows[i+1].cells[1].innerHTML;
+                    cell3.innerHTML = table1.rows[i+1].cells[2].innerHTML;
+                    cell4.innerHTML = table1.rows[i+1].cells[3].innerHTML;
+                    cell5.innerHTML = "<label><input type='checkbox' class='filled-in' name='check-tab2'/><span></span></label>";
+
+                    // remove the transfered rows from the first table [table1]
+                    var index = table1.rows[i+1].rowIndex;
+                    table1.deleteRow(index);
+                    // we have deleted some rows so the checkboxes.length have changed
+                    // so we have to decrement the value of i
+                    i--;
+                    console.log(checkboxes.length);
+                    var path = "{{ path('transferPlayers') }}";
+                    $.ajax({
+                       url:path,
+                        type: 'POST',
+                        data: {
+                            id:id,
+                            name:name,
+                            position:position,
+                            quality:quality,
+                            speed:speed,
+                            transferIn:true,
+                            teamid:teamId
+                        },
+                        success: function(data,status){
+                            /*alert('success: transferred to team!');*/
+                        },error: function(){
+
+                        }
+                    });
+                }
+            }
+        }
+
+
+        function tab2_To_tab1()
+        {
+            var table1 = document.getElementById("table1"),
+                table2 = document.getElementById("table2"),
+                checkboxes = document.getElementsByName("check-tab2");
+            console.log("Val1 = " + checkboxes.length);
+            for(var i = 0; i < checkboxes.length; i++){
+                if(checkboxes[i].checked)
+                {
+                    // create new row and cells
+                    var newRow = table1.insertRow(table1.length),
+                        cell1 = newRow.insertCell(0),
+                        cell2 = newRow.insertCell(1),
+                        cell3 = newRow.insertCell(2),
+                        cell4 = newRow.insertCell(3);
+                        cell5 = newRow.insertCell(4);
+                    // add values to the cells
+                    var name = table2.rows[i+1].cells[0].innerHTML,
+                        position =table2.rows[i+1].cells[1].innerHTML,
+                        quality = table2.rows[i+1].cells[2].innerHTML,
+                        speed =table2.rows[i+1].cells[3].innerHTML,
+                        id=table2.rows[i+1].getAttribute('id');
+                    var team=$("#js-select-team").val();
+                    var tokens = team.split("_-_-");
+                    var teamName = tokens[0],
+                        teamId = tokens[1];
+
+                    newRow.setAttribute("id",id);
+                    cell1.innerHTML = table2.rows[i+1].cells[0].innerHTML;
+                    cell2.innerHTML = table2.rows[i+1].cells[1].innerHTML;
+                    cell3.innerHTML = table2.rows[i+1].cells[2].innerHTML;
+                    cell4.innerHTML = table2.rows[i+1].cells[3].innerHTML;
+                    cell5.innerHTML = "<label><input type='checkbox' class='filled-in' name='check-tab1'/><span></span></label>";
+
+                    // remove the transfered rows from the second table [table2]
+                    var index = table2.rows[i+1].rowIndex;
+                    table2.deleteRow(index);
+                    // we have deleted some rows so the checkboxes.length have changed
+                    // so we have to decrement the value of i
+                    i--;
+                    console.log(checkboxes.length);
+
+                    var path = "{{ path('transferPlayers') }}";
+                    $.ajax({
+                        url:path,
+                        type: 'POST',
+                        data: {
+                            id:id,
+                            name:name,
+                            position:position,
+                            quality:quality,
+                            speed:speed,
+                            transferOut:true,
+                            teamid:teamId
+                        },
+                        success: function(data,status){
+                            /*alert(data);*/
+                            
+                        },error: function(){
+
+                        }
+                    });
+                }
+            }
+        }
+
+    </script>
+
+{% endblock %} {#endblock body#}

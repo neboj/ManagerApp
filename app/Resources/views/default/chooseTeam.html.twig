@@ -1,0 +1,26 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    {{ parent() }}
+    <section class="choose-team-section bg">
+        <div class="container league-window-container choose-team">
+            <div class="row ">
+                <div class="choose-team-controls controls">
+                    <h2 class="choose-team-heading">Choose your team</h2>
+                    <div class="input-field">
+
+                        <select id="js-choose-team">
+                            <option value="" disabled selected>Choose your team</option>
+                            {% for team in teams %}
+                                <option value="{{ team.name }}_-_-{{ team.id }}" id="{{ team.id }}">{{ team.name }}</option>
+                            {%  endfor %}
+
+                        </select>
+                        <a href="{{ path('homepage') }}" class="btn-play"><span class="selected-team">Play</span></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+{% endblock %} {#endblock body#}
